@@ -1,0 +1,66 @@
+﻿@model CommonLibrary.ViewModels.BaseViewModel
+@inject Homepage.Service.SessionHelper SessionHelper
+
+<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <div class="container">
+        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ARENA</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+            <ul class="navbar-nav flex-grow-1">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Statistics</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Tournament" asp-action="Index">Tournaments</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Leagues" asp-action="Index">Leagues</a>
+                </li>
+                @{
+                    var user = SessionHelper.GetSessionUser(Context);
+                    if (user != null)
+                    {
+                        <li class="nav-item">
+                            <a class=nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">@user.UserName</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Logout">Logout</a>
+                        </li>
+                        @if (user.GetType().ToString() == "CommonLibrary.Advertiser")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Advertisement" asp-action="Index">Advertise</a>
+                            </li>
+                        }
+                        @if (user.GetType().ToString() == "CommonLibrary.Player")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Games" asp-action="Game">Games</a>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Register">Create Account</a>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+        <form asp-controller="Users" asp-action="SearchForUser" class="form-group">
+            Search user: <input type="text" name="searchString">
+            <input type="hidden" name="back" value="false">
+            <input type="submit" value="Search" class="btn btn-secondary" />
+        </form>
+    </div>
+</nav>
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@

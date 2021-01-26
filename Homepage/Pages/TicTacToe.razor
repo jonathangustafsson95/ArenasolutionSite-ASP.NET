@@ -1,0 +1,199 @@
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@using Homepage.Service
+@using CommonLibrary
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@inject SessionHelper sessionHelper
+
+@if ((sessionHelper.GetSessionUser(httpContextAccessor.HttpContext) as Player).ConnectionId == null)
+{
+    <button @onclick="@JoinGame">Join Game</button>
+}
+else if (gameJoined == false)
+{
+    JoinGame();
+}
+@if (@Message != null)
+{
+    <div id="messageBox" class="container h-100" style="width:500px;background:#ff6a00;padding:40px" @onclick="@HideMessage">
+        <div class="row h-50 justify-content-center align-items-center">
+            <span style="font-size:xx-large">@Message!</span>
+            <b>Click to hide</b>
+        </div>
+    </div>
+}
+@if (gameJoined && startGame == false)
+{
+    <div class="container h-100" style="width:500px;background:#ff6a00;padding:40px">
+        <div class="row h-50 justify-content-center align-items-center">
+            <span style="font-size:xx-large">Waiting for opponent...</span>
+        </div>
+    </div>
+}
+
+else if (@playerWon == null && startGame)
+{
+    <div class="container-fluid" style="width:500px;">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-3 col-class text-center" @onclick="@(() => OnSelect(0))">
+                <span style="font-size:xx-large">@ShowBoard(0)</span>
+            </div>
+            <div class="col-3 col-class text-center" @onclick="@(() => OnSelect(1))">
+                <span style="font-size:xx-large">@ShowBoard(1)</span>
+            </div>
+            <div class="col-3 col-class text-center" @onclick="@(() => OnSelect(2))">
+                <span style="font-size:xx-large">@ShowBoard(2)</span>
+            </div>
+        </div>
+        <div class="row justify-content-center align-items-center">
+            <div class="col-3 col-class text-center" @onclick="@(() => OnSelect(3))">
+                <span style="font-size:xx-large">@ShowBoard(3)</span>
+            </div>
+            <div class="col-3 col-class text-center" @onclick="@(() => OnSelect(4))">
+                <span style="font-size:xx-large">@ShowBoard(4)</span>
+            </div>
+            <div class="col-3 col-class text-center" @onclick="@(() => OnSelect(5))">
+                <span style="font-size:xx-large">@ShowBoard(5)</span>
+            </div>
+        </div>
+        <div class="row justify-content-center align-items-center">
+            <div class="col-3 col-class text-center" @onclick="@(() => OnSelect(6))">
+                <span style="font-size:xx-large">@ShowBoard(6)</span>
+            </div>
+            <div class="col-3 col-class text-center" @onclick="@(() => OnSelect(7))">
+                <span style="font-size:xx-large">@ShowBoard(7)</span>
+            </div>
+            <div class="col-3 col-class text-center" @onclick="@(() => OnSelect(8))">
+                <span style="font-size:xx-large">@ShowBoard(8)</span>
+            </div>
+        </div>
+    </div>
+    <br />
+    @if (!gameOver)
+    {
+        <button @onclick="@Forfeit">Forfeit</button>
+    }
+    else
+    {
+        <button @onclick="@EndGame">Back to games</button>
+    }
+}
+@code
+{
+    private string[] Board;
+    private bool gameOver = false;
+    HubConnection connection;
+    private string Message = null;
+    string playerWon = null;
+    bool startGame = false;
+    bool gameJoined = false;
+
+    protected async override Task OnInitializedAsync()
+    {
+        connection = new HubConnectionBuilder()
+        .WithUrl("https://localhost:44377/gamehub")
+        .Build();
+        connection.On<string[]>("GameState", GameState);
+        connection.On<string>("SetConnectionId", SetConnectionId);
+        connection.On<string>("NotifyUser", NotifyUser);
+        connection.On<string, string[]>("AnnounceGameOver", AnnounceGameOver);
+        connection.On<string>("BackToGames", BackToGames);
+        await connection.StartAsync();
+    }
+
+    void HideMessage()
+    {
+        Message = null;
+        StateHasChanged();
+    }
+
+    async void JoinGame()
+    {
+        var player = sessionHelper.GetSessionUser(httpContextAccessor.HttpContext) as Player;
+        Message = null;
+        gameJoined = true;
+        player.CurrentGameType = "TicTacToe";
+        await connection.InvokeAsync("OnPlayerReceived", player);
+    }
+
+    async void Forfeit()
+    {
+        await connection.InvokeAsync("OnGameOver", "forfeit");
+    }
+
+    async void EndGame()
+    {
+        await connection.InvokeAsync("OnGameOver", "endgame");
+    }
+
+    Task BackToGames(string message)
+    {
+        Message = message;
+        startGame = false;
+        gameJoined = false;
+        Player player = sessionHelper.GetSessionUser(httpContextAccessor.HttpContext) as Player;
+        player.CurrentGameType = null;
+        player.ConnectionId = null;
+        sessionHelper.SetSessionUser(httpContextAccessor.HttpContext, player);
+        connection.StopAsync();
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    Task GameState(string[] board)
+    {
+        if (board != null)
+        {
+            startGame = true;
+            Board = board;
+            StateHasChanged();
+        }
+        return Task.CompletedTask;
+    }
+
+    Task SetConnectionId(string Id)
+    {
+        Player player = sessionHelper.GetSessionUser(httpContextAccessor.HttpContext) as Player;
+        player.ConnectionId = Id;
+        sessionHelper.SetSessionUser(httpContextAccessor.HttpContext, player);
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    Task NotifyUser(string message)
+    {
+        Message = message;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    Task AnnounceGameOver(string message, string[] board)
+    {
+        Board = board;
+        if (message == "Draw")
+        {
+            Message = "It's a draw";
+        }
+        else
+        {
+            Message = string.Concat(message, " won!");
+        }
+        gameOver = true;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private async Task OnSelect(int index)
+    {
+        if (!gameOver)
+        {
+            Message = null;
+            await connection.InvokeAsync("OnUserMoveReceived", index);
+        }
+    }
+
+    private string ShowBoard(int index)
+    {
+        return Board[index];
+    }
+}

@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div style="background-image: url('Assets/bakgrundsbild1.jpg')">
+
+    <table width="700px">
+        <h2>New Tournaments</h2>
+        <tbody>
+            <tr>
+                <th>Name</th>
+                <th>Style</th>
+                <th>League</th>
+            </tr>
+
+            @{
+                foreach (var tournament in ViewBag.Tournaments)
+                {
+                    <tr style="border-top:dotted; border-color:darkgray">
+                        <td>@tournament.TournamentName</td>
+                        <td>@tournament.TournamentStyle</td>
+                        <td>@tournament.League.LeagueName</td>
+
+                        <td>
+                            <form asp-controller="Tournament" asp-action="OnClickWatch" method="post">
+                                <button type="submit" class="btn btn-primary" value="@tournament.TournamentId">Spectate</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+
+        </tbody>
+    </table>
+</div>
+

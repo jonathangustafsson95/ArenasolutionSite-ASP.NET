@@ -1,0 +1,16 @@
+﻿@model CommonLibrary.ViewModels.ProfilePageViewModel
+
+<h5>Operator settings</h5>
+<div style="width: 60%; float:left">
+    <form asp-controller="Users" asp-action="ChangeUserSettings">
+        Change type of user
+        <select asp-for="UserTypes" name="UserTypeNum" asp-items="Html.GetEnumSelectList<CommonLibrary.Enums.UserType>()"></select>
+        <input type="hidden" name="userId" value="@Model.User.UserId" />
+        <br />
+        <input type="submit" value="Submit" />
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

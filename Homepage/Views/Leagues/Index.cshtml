@@ -1,0 +1,100 @@
+﻿@model CommonLibrary.ViewModels.LeagueViewModel
+
+@{
+    ViewData["Title"] = "ViewIndex";
+}
+
+<h1>Leagues</h1>
+@if (ViewBag.Leagues != null)
+{
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.League.LeagueName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.League.LeagueOwner)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (ViewBag.Leagues != null)
+        {
+            @foreach (var item in ViewBag.Leagues as List<CommonLibrary.League>)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LeagueName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LeagueOwner.UserName)
+                    </td>
+                    <td>
+                        @if (Model.User != null
+                         && Model.User.GetType() == typeof(CommonLibrary.Player)
+                         && (Model.User as CommonLibrary.Player).LeagueMemberShips.FirstOrDefault(x => x.LeagueId == item.LeagueId) == null)
+                        {
+                            <form asp-action="Apply" asp-controller="Leagues">
+                                <input type="hidden" name="id" value="@item.LeagueId" />
+                                <input type="submit" value="Apply" class="btn btn-primary btn-sm" />
+                            </form>
+                        }
+                    </td>
+                    <td>
+                        @{
+                            var detailsBtn = "det " + item.LeagueId.ToString();
+                        }
+                        <button id="@detailsBtn" onclick="leagueDetails(this.id)" class="btn btn-secondary btn-sm">Details</button>
+                    </td>
+                    <td>
+                        @if (Model.User != null)
+                        {
+                            if (Model.User.GetType() == typeof(CommonLibrary.Operator) || Model.User.GetType() == typeof(CommonLibrary.LeagueOwner))
+                            {
+                                var deleteBtn = "del " + item.LeagueId.ToString();
+                                <button id="@deleteBtn" onclick="confirmDeleteLeague(this.id)" class="btn btn-danger btn-sm">Delete</button>
+                                await Html.RenderPartialAsync("_ConfirmDelete", item);
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <b>@ViewBag.Error</b>
+        }
+
+    </tbody>
+</table>
+}
+else
+{
+    <b>There are no leagues</b>
+}
+
+<script>
+    function confirmDeleteLeague(id) {
+        var element = document.getElementById("div" + id);
+        var button = document.getElementById(id);
+        if (element.style.display == "block") {
+            element.style.display = "none";
+            button.textContent = "Delete";
+        }
+        else {
+            element.style.display = "block";
+            button.textContent = "cancel";
+        }
+    }
+    function deleteConfirmedLeague(id) {
+        var url = "/Leagues/Delete/" + id.substring(str.indexOf(' ') + 1);
+        window.location.href = url;
+    }
+    function leagueDetails(btnid) {
+        var id = btnid.substring(btnid.indexOf(' ') + 1);
+        var url = "/Leagues/ShowLeague/" + id;
+        window.location.href = url;
+    }
+</script>

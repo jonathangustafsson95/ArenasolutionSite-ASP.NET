@@ -1,0 +1,58 @@
+﻿@model CommonLibrary.ViewModels.BaseViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <base href="~/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ARENA</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style type="text/css">
+        body {
+            color: black;
+        }
+
+        footer {
+            background-color: black
+        }
+    </style>
+</head>
+<body>
+    <header>
+        @Html.Partial("_NavBar", Model);
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @* Implementerar en banner med reklam precis under header. *@
+            @if (Model != null && Model.Advert != null && Model.Advert.AdvertName != null)
+            {
+                <form asp-action="AdClicked" asp-controller="Advertisement">
+                    <input type="hidden" value="@Model.Advert.advertId" id="advertId" name="advertId" />
+                    <input type="hidden" value="@Model.Advert.AdvertName" id="AdvertName" name="AdvertName" />
+                    <input type="hidden" value="@Model.Advert.Sponsoring" id="Sponsoring" name="Sponsoring" />
+                    <input type="hidden" value="@Model.Advert.BeginDateTime" id="BeginDateTime" name="BeginDateTime" />
+                    <input type="hidden" value="@Model.Advert.DeadlineDateTime" id="DeadlineDateTime" name="DeadlineDateTime" />
+                    <input type="hidden" value="@Model.Advert.Link" id="Link" name="Link" />
+                    <input type="hidden" value="@Model.Advert.UserId" id="UserId" name="UserId" />
+                    <input type="hidden" value="@Convert.ToBase64String(Model.Advert.productImage)" id="productImage" name="productImage" />
+                    <input type="image" src="data:image/jpg;base64, @Convert.ToBase64String(Model.Advert.productImage)" width="728" , height="90" alt="Submit" />
+                </form>
+            }
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2020 - ARENA - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="_framework/blazor.server.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

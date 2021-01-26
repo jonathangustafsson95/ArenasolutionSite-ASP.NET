@@ -1,0 +1,83 @@
+﻿@model CommonLibrary.ViewModels.ProfilePageViewModel
+@inject Homepage.Service.SessionHelper SessionHelper
+
+<h1>
+    Profile page
+</h1>
+
+<div style="width: 60%; float:left">
+    <hr />
+    @{
+        if (Model.User != null && Model.User.GetType().ToString() == "CommonLibrary.Player")
+        {
+            await Html.RenderPartialAsync("PartialPlayerProfile", Model);
+        }
+        else
+        {
+            await Html.RenderPartialAsync("PartialUserProfile", Model);
+        }
+    }
+    @{
+        if (ViewBag.search == true)
+        {
+            <form asp-controller="Users" asp-action="SearchForUser">
+                <input type="submit" value="Back" class="btn btn-secondary" />
+            </form>
+        }
+        else
+        {
+            if (ViewBag.Edit == true)
+            {
+                <button id="Edit" onclick="showEditForm()" class="btn btn-primary btn-sm">Cancel</button>
+                <div id="EditForm" style="display:block">
+                    @{
+                        await Html.RenderPartialAsync("_EditUser", Model.User);
+                    }
+                </div>
+            }
+            else
+            {
+                <button id="Edit" onclick="showEditForm()" class="btn btn-primary btn-sm">Edit</button>
+                <div id="EditForm" style="display:none">
+                    @{
+                        await Html.RenderPartialAsync("_EditUser", Model.User);
+                    }
+                </div>
+            }
+
+            <a asp-controller="Home" asp-action="Index">Back to homepage.</a>
+        }
+    }
+</div>
+<div style="width: 40%; float:right">
+    <hr />
+    @{
+        var user = SessionHelper.GetSessionUser(Context);
+        if (user != null && user.GetType().ToString() == "CommonLibrary.Operator" && Model.User.UserId != user.UserId)
+        {
+            await Html.RenderPartialAsync("_OperatorView", Model);
+        }
+        else if(user != null && user.GetType().ToString() == "CommonLibrary.LeagueOwner" && ViewBag.search != true)
+        {
+            await Html.RenderPartialAsync("_LeagueOwnerView", Model.User as CommonLibrary.LeagueOwner);
+        }
+        else if (user != null && user.GetType() == typeof(CommonLibrary.Player) && ViewBag.search != true)
+        {
+            await Html.RenderPartialAsync("_PlayerLeagues", Model.User as CommonLibrary.Player);
+        }
+    }
+</div>
+<script>
+    function showEditForm() {
+        var element = document.getElementById("EditForm");
+        var button = document.getElementById("Edit");
+        if (element.style.display == "block") {
+            element.style.display = "none";
+            button.textContent = "Edit";
+        }
+        else {
+            element.style.display = "block";
+            button.textContent = "Cancel";
+        }
+    }
+</script>

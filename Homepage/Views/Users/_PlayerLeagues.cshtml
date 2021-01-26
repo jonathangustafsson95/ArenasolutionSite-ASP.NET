@@ -1,0 +1,62 @@
+﻿@model CommonLibrary.Player
+<div style="width: 80%; float:left">
+    @if (Model.LeagueMemberShips != null)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        LeagueName
+                    </th>
+                    <th style="width:1000%"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.LeagueMemberShips)
+                {
+                    <tr>
+                        <td>
+                            <b>@item.League.LeagueName</b>
+                        </td>
+                        <td>
+                            @{
+                                var detailsBtn = "det " + item.LeagueId.ToString();
+                            }
+                            <button id="@detailsBtn" onclick="leagueDetails(this.id)" class="btn btn-secondary btn-sm">Details</button>
+                        </td>
+                        <td>
+                            <form asp-action="DeleteMember" asp-controller="Leagues" asp-area="">
+                                <input type="hidden" name="userId" value="@Model.UserId" />
+                                <input type="hidden" name="leagueId" value="@item.LeagueId" />
+                                <input type="submit" value="Leave" class="btn btn-danger btn-sm" />
+                            </form>
+                        </td>
+                    </tr>
+                    @if (item.Applicant)
+                    {
+                        <b>You are not yet a full member</b>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+</div>
+<script>
+    function confirmLeave(id) {
+        var element = document.getElementById("div" + id);
+        var button = document.getElementById(id);
+        if (element.style.display == "block") {
+            element.style.display = "none";
+            button.textContent = "Leave";
+        }
+        else {
+            element.style.display = "block";
+            button.textContent = "Cancel";
+        }
+    }
+    function leagueDetails(btnid) {
+        var id = btnid.substring(btnid.indexOf(' ') + 1);
+        var url = "/Leagues/ShowLeague/" + id;
+        window.location.href = url;
+    }
+</script>

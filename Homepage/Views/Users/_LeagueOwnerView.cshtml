@@ -1,0 +1,99 @@
+﻿@model CommonLibrary.LeagueOwner
+
+<div style="width: 80%; float:left">
+    @if (Model.Leagues != null)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        LeagueName
+                    </th>
+                    <th style="width:1000%"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Leagues)
+                {
+                <tr>
+                    <td>
+                        <b>@item.LeagueName</b>
+                    </td>
+                    <td>
+                        @{
+                            var detailsBtn = "det " + item.LeagueId.ToString();
+                        }
+                        <button id="@detailsBtn" onclick="leagueDetails(this.id)" class="btn btn-secondary btn-sm">Details</button>
+                    </td>
+                    <td style="width:1000%">
+                        @{
+                            var editBtn = "ed" + item.LeagueId.ToString();
+                        }
+                        <button id="@editBtn" onclick="showEditLeagueForm(this.id)" class="btn btn-secondary btn-sm">Edit</button>
+                        @{
+                            await Html.RenderPartialAsync("_EditLeague", item);
+                        }
+                    </td>
+                    <td>
+                        @{
+                            var deleteBtn = "del " + item.LeagueId.ToString();
+                        }
+                        <button id="@deleteBtn" onclick="confirmDeleteLeague(this.id)" class="btn btn-danger btn-sm">Delete</button>
+                        @{
+                            await Html.RenderPartialAsync("_ConfirmDelete", item);
+                        }
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    }
+    <button id="Create" onclick="showCreateForm()" class="btn btn-primary">Create League</button>
+    <div id="CreateForm" style="display:none">
+        @{
+            await Html.RenderPartialAsync("_CreateLeague", new CommonLibrary.League());
+        }
+        <button id="Cancel" onclick="hideCreateForm()" class="btn btn-secondary">Cancel</button>
+    </div>
+
+
+</div>
+<script>
+    function showCreateForm() {
+        $("#CreateForm").show();
+        $("#Create").hide();
+    }
+    function hideCreateForm() {
+        $("#CreateForm").hide();
+        $("#Create").show();
+    }
+    function showEditLeagueForm(id) {
+        var element = document.getElementById("div" + id);
+        var button = document.getElementById(id);
+        if (element.style.display == "block") {
+            element.style.display = "none";
+            button.textContent = "Edit";
+        }
+        else {
+            element.style.display = "block";
+            button.textContent = "cancel";
+        }
+    }
+    function confirmDeleteLeague(id) {
+        var element = document.getElementById("div" + id);
+        var button = document.getElementById(id);
+        if (element.style.display == "block") {
+            element.style.display = "none";
+            button.textContent = "Delete";
+        }
+        else {
+            element.style.display = "block";
+            button.textContent = "cancel";
+        }
+    }
+    function leagueDetails(btnid) {
+        var id = btnid.substring(btnid.indexOf(' ')+1);
+        var url = "/Leagues/ShowLeague/" + id;
+        window.location.href = url;
+    }
+</script>

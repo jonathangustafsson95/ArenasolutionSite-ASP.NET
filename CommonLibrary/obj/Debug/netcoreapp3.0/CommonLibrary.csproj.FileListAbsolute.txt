@@ -1,0 +1,10 @@
+C:\Users\jonte\Desktop\Sprint 4\arena-master\ArenaSolution\CommonLibrary\bin\Debug\netcoreapp3.0\CommonLibrary.deps.json
+C:\Users\jonte\Desktop\Sprint 4\arena-master\ArenaSolution\CommonLibrary\bin\Debug\netcoreapp3.0\CommonLibrary.runtimeconfig.json
+C:\Users\jonte\Desktop\Sprint 4\arena-master\ArenaSolution\CommonLibrary\bin\Debug\netcoreapp3.0\CommonLibrary.runtimeconfig.dev.json
+C:\Users\jonte\Desktop\Sprint 4\arena-master\ArenaSolution\CommonLibrary\bin\Debug\netcoreapp3.0\CommonLibrary.dll
+C:\Users\jonte\Desktop\Sprint 4\arena-master\ArenaSolution\CommonLibrary\bin\Debug\netcoreapp3.0\CommonLibrary.pdb
+C:\Users\jonte\Desktop\Sprint 4\arena-master\ArenaSolution\CommonLibrary\obj\Debug\netcoreapp3.0\CommonLibrary.csprojAssemblyReference.cache
+C:\Users\jonte\Desktop\Sprint 4\arena-master\ArenaSolution\CommonLibrary\obj\Debug\netcoreapp3.0\CommonLibrary.AssemblyInfoInputs.cache
+C:\Users\jonte\Desktop\Sprint 4\arena-master\ArenaSolution\CommonLibrary\obj\Debug\netcoreapp3.0\CommonLibrary.AssemblyInfo.cs
+C:\Users\jonte\Desktop\Sprint 4\arena-master\ArenaSolution\CommonLibrary\obj\Debug\netcoreapp3.0\CommonLibrary.dll
+C:\Users\jonte\Desktop\Sprint 4\arena-master\ArenaSolution\CommonLibrary\obj\Debug\netcoreapp3.0\CommonLibrary.pdb

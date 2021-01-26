@@ -1,0 +1,107 @@
+﻿@model CommonLibrary.ViewModels.TournamentViewModel
+@inject Homepage.Service.SessionHelper SessionHelper
+@{
+    ViewData["Title"] = "Play";
+}
+
+<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <div class="container">
+        <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+            <ul class="navbar-nav flex-grow-1">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Tournament" asp-action="Index">Watch</a>
+                </li>
+                <li class="nav-item">
+                    <p class="nav-link text-dark"> | </p>
+                </li>
+
+                @{
+                    var user = SessionHelper.GetSessionUser(Context);
+                    if (user != null)
+                    {
+                        if (user.GetType().ToString() == "CommonLibrary.LeagueOwner")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Tournament" asp-action="Admin">Admin</a>
+                            </li>
+                        }
+                        else if (user.GetType().ToString() == "CommonLibrary.Player")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Tournament" asp-action="Play">Play</a>
+                            </li>
+                        }
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<h1>Play</h1>
+
+<table style="width:100%">
+    <tr>
+        <th>TournamentID</th>
+        <th>Tournament name</th>
+        <th>Tournament style</th>
+        <th>League</th>
+        <th>Players</th>
+    </tr>
+
+    @if (ViewData["ActiveTournaments"] == null)
+    {
+        <p style="color:red">@ViewBag.Error</p>
+    }
+    @{ else
+        {
+            @foreach (var item in ViewData["ActiveTournaments"] as List<CommonLibrary.Tournament>)
+            {
+                bool showButton = true;
+
+                foreach (CommonLibrary.TournamentPlayer tournamentPlayer in ViewBag.UserTournaments as List<CommonLibrary.TournamentPlayer>)
+                {
+                    if(item.TournamentId == tournamentPlayer.TournamentId)
+                    {
+                        showButton = false;
+                    }
+                }
+                <tr style="border-top:dotted; border-color:darkgray">
+                    <td>@item.TournamentId</td>
+                    <td>@item.TournamentName</td>
+                    <td>@item.TournamentStyle</td>
+                    <td>@item.League.LeagueName</td>
+                    <td>@item.CurrentPlayers / @item.MaxPlayer</td>
+                    
+                    @{ 
+                        if (showButton)
+                        {
+                            <td>
+                                <form asp-controller="Tournament" asp-action="OnClickRegister" method="post">
+                                    <button type="submit" class="btn btn-primary" value="@item.TournamentId" name="tournamentId" id="tournamentId">Register</button>
+                                </form>
+                            </td>
+                        }
+                        else if (item.CurrentPlayers == item.MaxPlayer)
+                        {
+                            <td>
+                                <form asp-controller="Tournament" asp-action="PlayTournament" method="post">
+                                    <button type="submit" class="btn btn-primary" value="@item.TournamentId" name="tournamentId" id="tournamentId">Play</button>
+                                </form>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <h4 style="color:red">Registered</h4>
+                            </td>
+                        }
+
+                    }
+                    
+                </tr>
+            }
+        }
+    }
+</table>
+

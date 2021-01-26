@@ -1,0 +1,58 @@
+﻿@model CommonLibrary.ViewModels.AdvertViewModel
+
+@{
+    ViewData["Title"] = "Buy";
+}
+
+@if (ViewBag.Error != null)
+{
+    <p style="color:red">@ViewBag.Error</p>
+}
+
+<h1>Buy new advert</h1>
+
+<div class="row" style="background-color:white">
+    <div class="col-md-4">
+        <form asp-action="BuyAdvert" , new { enctype="multipart/form-data" }>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input type="hidden" asp-for="@Model.advert.UserId" class="form-control" value="@Model.User.UserId"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.advert.AdvertName" class="control-label"></label>
+                <input asp-for="@Model.advert.AdvertName" class="form-control" />
+                <span asp-validation-for="@Model.advert.AdvertName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.advert.Sponsoring" class="control-label"></label>
+                <input asp-for="@Model.advert.Sponsoring" class="form-control" />
+                <span asp-validation-for="@Model.advert.Sponsoring" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.advert.BeginDateTime" class="control-label"></label>
+                <input asp-for="@Model.advert.BeginDateTime" type="datetime" class="form-control" value="@DateTime.Today" />
+                <span asp-validation-for="@Model.advert.BeginDateTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.advert.DeadlineDateTime" class="control-label"></label>
+                <input asp-for="@Model.advert.DeadlineDateTime" type="datetime" class="form-control" value="@DateTime.Today.AddDays(7)" />
+                <span asp-validation-for="@Model.advert.DeadlineDateTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.advert.Link" class="control-label"></label>
+                <input asp-for="@Model.advert.Link" type="datetime" class="form-control" />
+                <span asp-validation-for="@Model.advert.Link" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.advert.productImage" class="control-label"></label>
+                <input asp-for="@Model.advert.productImage" type="file" name="productImage" />
+                <span asp-validation-for="@Model.advert.productImage" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Upload" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+

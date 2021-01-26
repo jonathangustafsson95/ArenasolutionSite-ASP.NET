@@ -1,0 +1,8 @@
+C:\Users\jonte\Desktop\Sprint 4\arena-master\ArenaSolution\API.Library\bin\Debug\netcoreapp3.1\API.Library.deps.json
+C:\Users\jonte\Desktop\Sprint 4\arena-master\ArenaSolution\API.Library\bin\Debug\netcoreapp3.1\API.Library.dll
+C:\Users\jonte\Desktop\Sprint 4\arena-master\ArenaSolution\API.Library\bin\Debug\netcoreapp3.1\API.Library.pdb
+C:\Users\jonte\Desktop\Sprint 4\arena-master\ArenaSolution\API.Library\obj\Debug\netcoreapp3.1\API.Library.csprojAssemblyReference.cache
+C:\Users\jonte\Desktop\Sprint 4\arena-master\ArenaSolution\API.Library\obj\Debug\netcoreapp3.1\API.Library.AssemblyInfoInputs.cache
+C:\Users\jonte\Desktop\Sprint 4\arena-master\ArenaSolution\API.Library\obj\Debug\netcoreapp3.1\API.Library.AssemblyInfo.cs
+C:\Users\jonte\Desktop\Sprint 4\arena-master\ArenaSolution\API.Library\obj\Debug\netcoreapp3.1\API.Library.dll
+C:\Users\jonte\Desktop\Sprint 4\arena-master\ArenaSolution\API.Library\obj\Debug\netcoreapp3.1\API.Library.pdb

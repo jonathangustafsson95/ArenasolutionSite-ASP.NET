@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewData["Title"] = "AddBalance";
+}
+
+<h1>Add new Balance</h1>
+<br />
+<p>Your current balance: @ViewData["currentBalance"]</p>
+<br />
+<form asp-controller="Advertisement" asp-action="AddBalanceButton">
+    <input type="text" name="inputbox" value="" /> SEK <br /> <br />
+    <input type="submit" value="Add" name="addBalanceButton" />
+</form>
+
+@if (ViewBag.Error != null)
+{
+    <p style="color:red">@ViewBag.Error</p>
+}
+

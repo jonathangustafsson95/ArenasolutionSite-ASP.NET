@@ -1,0 +1,66 @@
+﻿@model CommonLibrary.ViewModels.ProfilePageViewModel
+@inject Homepage.Service.SessionHelper SessionHelper
+
+@{
+    // Listar uppsökta users
+}
+<h1>SearchResult</h1>
+<table class="table" style="background-color:whitesmoke">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.User.UserName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (ViewBag.UsersList != null)
+        {
+            @foreach (var item in ViewBag.UsersList as List<CommonLibrary.User>)
+            {
+                <tr>
+                    <td>
+                        <div>
+                            @Html.DisplayFor(modelItem => item.UserName)
+                        </div>
+                    </td>
+                    <td>
+                        @Html.ActionLink("Profile", "ProfilePage", new { id = item.UserId }) |
+                        @{
+                            var user = SessionHelper.GetSessionUser(Context);
+                            if (user != null && user.GetType().ToString() == "CommonLibrary.Operator" && item.UserId != user.UserId)
+                            {
+                                <button id="@item.UserId" class="btn btn-danger" onclick="confirmDelete(this.id)">Delete</button>
+                                <div style="width:40%; float:right;">
+                                    @{
+                                        await Html.RenderPartialAsync("_ConfirmDeleteUser", item);
+                                    }
+                                </div>
+
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <b>@ViewBag.msg</b>
+        }
+    </tbody>
+</table>
+<script>
+    function confirmDelete(id) {
+        var element = document.getElementById("div" + id);
+        element.style.display = "block";
+    }
+    function hideDelete(id) {
+        var element = document.getElementById("div" + id);
+        element.style.display = "none";
+    }
+    function deleteConfirmed(id) {
+        var url = "/Users/Delete/" + id;
+        window.location.href = url;
+    }
+</script>

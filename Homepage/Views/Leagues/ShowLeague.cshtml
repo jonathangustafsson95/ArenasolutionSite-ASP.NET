@@ -1,0 +1,124 @@
+﻿@model CommonLibrary.ViewModels.LeagueViewModel
+@if (ViewBag.Error == null)
+{
+    @if (Model.League != null
+&& Model.User != null
+&& Model.User.GetType() == typeof(CommonLibrary.Player)
+&& (Model.User as CommonLibrary.Player).LeagueMemberShips.SingleOrDefault(a => a.LeagueId == Model.League.LeagueId) == null
+)
+    {
+        <h3>@Model.League.LeagueName <button id="@Model.League.LeagueId" onclick="apply(this.id)" class="btn btn-success">Apply</button></h3>
+    }
+    else
+    {
+        <h3>
+            @Model.League.LeagueName
+        </h3>
+        @if (Model.User != null
+           && Model.User.GetType() == typeof(CommonLibrary.Player)
+           && (Model.User as CommonLibrary.Player).LeagueMemberShips.SingleOrDefault(m => m.LeagueId == Model.League.LeagueId).Applicant == true)
+        {
+            <b>Wating for league owner to accept your membership request</b>
+        }
+        <br />
+        <h4>Owner: @Model.League.LeagueOwner.UserName</h4>
+    }
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    UserId
+                </th>
+                <th>
+                    Player Name
+                </th>
+                @if (Model.User != null && Model.User.GetType() == typeof(CommonLibrary.LeagueOwner))
+                {
+                    <th>
+                        Member Status
+                    </th>
+                }
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.League.LeagueMembers != null && Model.League.LeagueMembers.Count() > 0)
+            {
+                @foreach (var item in Model.League.LeagueMembers)
+                {
+                    // denna ifsats kan tas bort när Db är uppdaterad
+                    if (item.UserId != 0)
+                    {
+                        <tr>
+                            @if (item.Applicant == false || Model.User != null && Model.User.GetType() == typeof(CommonLibrary.LeagueOwner))
+                            {
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.UserId)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Player.UserName)
+                                </td>
+                            }
+                            @if (Model.User != null && Model.User.GetType() == typeof(CommonLibrary.LeagueOwner))
+                            {
+                                <td>
+                                    @if (item.Applicant == true)
+                                    {
+                                        <b>Pending..</b>
+                                    }
+                                    else
+                                    {
+                                        <b>Member</b>
+                                    }
+                                </td>
+                                @if (item.Applicant == true)
+                                {
+                                    <td style="width:20%">
+                                        <form asp-action="AcceptMember" asp-controller="Leagues">
+                                            <input type="hidden" name="userId" value="@item.UserId" />
+                                            <input type="hidden" name="leagueId" value="@item.LeagueId" />
+                                            <input type="submit" value="Accept" class="btn btn-primary" />
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form asp-action="DeleteMember" asp-controller="Leagues">
+                                            <input type="hidden" name="userId" value="@item.UserId" />
+                                            <input type="hidden" name="leagueId" value="@item.LeagueId" />
+                                            <input type="submit" value="Deny" class="btn btn-danger" />
+                                        </form>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <form asp-action="DeleteMember" asp-controller="Leagues">
+                                            <input type="hidden" name="userId" value="@item.UserId" />
+                                            <input type="hidden" name="leagueId" value="@item.LeagueId" />
+                                            <input type="submit" value="Kick" class="btn btn-danger" />
+                                        </form>
+                                    </td>
+                                }
+                            }
+                        </tr>
+                    }
+                }
+            }
+            else
+            {
+                <b>No members in this league</b>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <b>@ViewBag.Error</b>
+}
+
+<script>
+    function apply(id) {
+        var url = "/Leagues/Apply/" + id;
+        window.location.href = url;
+    }
+</script>

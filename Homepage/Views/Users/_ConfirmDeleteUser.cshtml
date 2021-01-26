@@ -1,0 +1,14 @@
+﻿@model CommonLibrary.User
+
+@{
+    var divId = "div" + Model.UserId.ToString();
+}
+<div style="display:none" id="@divId">
+    <div>
+        <b>Are you sure you want to delete user: @Model.UserName?</b>
+    </div>
+    <button id="@Model.UserId.ToString()" class="btn btn-danger" onclick="deleteConfirmed(this.id)">Yes</button>
+    <button id="@Model.UserId.ToString()" class="btn btn-secondary" onclick="hideDelete(this.id)">No</button>
+</div>
+
+

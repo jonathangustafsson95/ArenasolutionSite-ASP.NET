@@ -1,0 +1,53 @@
+﻿
+<tr>
+    <td width="500">
+        <br /><h3>My active advertisements</h3>
+    </td>
+</tr>
+<table>
+    <tbody style="background-color:white">
+        @foreach (var item in ViewData["ActiveAds"] as List<CommonLibrary.Advert>)
+        {
+            <tr>
+                <td style="border:solid" width="275" height="150">
+                    Advert name: <p>@item.AdvertName </p>
+                    Begindate: <p>@item.BeginDateTime.ToShortDateString()</p>
+                    Enddate: <p>@item.DeadlineDateTime.ToShortDateString()</p>
+                    Sponsoring: <p>@item.Sponsoring</p>
+                    Link: <p>@item.Link</p>
+                    <br />
+                </td>
+                <td style="border:solid" width="325" height="150">
+                    <img src="data:image/jpg;base64, @Convert.ToBase64String(item.productImage)" width="325" , height="150" />
+                </td>
+                <td>
+                    <form asp-action="Cancel" method="post">
+                        <input type="hidden" value="@item.advertId" id="advertId" name="advertId" />
+                        <input type="hidden" value="@item.AdvertName" id="AdvertName" name="AdvertName" />
+                        <input type="hidden" value="@item.Sponsoring" id="Sponsoring" name="Sponsoring" />
+                        <input type="hidden" value="@item.BeginDateTime" id="BeginDateTime" name="BeginDateTime" />
+                        <input type="hidden" value="@item.DeadlineDateTime" id="DeadlineDateTime" name="DeadlineDateTime" />
+                        <input type="hidden" value="@item.Link" id="Link" name="Link" />
+                        <input type="hidden" value="@item.UserId" id="UserId" name="UserId" />
+                        <input type="hidden" value="@Convert.ToBase64String(item.productImage)" id="productImage" name="productImage" />
+                        <input type="submit" value="Cancel" class="btn btn-primary" />
+                    </form>
+                </td>
+            </tr>
+
+        }
+
+    </tbody>
+</table>
+<br />
+<br />
+
+
+<p> Balance due: @ViewData["Balance"]</p>
+<form asp-controller="Advertisement" asp-action="Buy" method="post">
+    <button type="submit">Buy advertisement</button>
+</form>
+<br />
+<form asp-controller="Advertisement" asp-action="AddBalance" method="post">
+    <button type="submit">Add Balance</button>
+</form>
